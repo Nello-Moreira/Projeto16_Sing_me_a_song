@@ -1,5 +1,14 @@
 import dbConnection from './connection.js';
 
+async function searchRecomendationByParameter({ parameter, value }) {
+	const recomendation = await dbConnection.query(
+		`SELECT * FROM songs WHERE ${parameter} = $1;`,
+		[value]
+	);
+
+	return recomendation.rows;
+}
+
 async function insertRecomendation({ name, youtubeLink, score }) {
 	const recomendation = await dbConnection.query(
 		'INSERT INTO songs (name, youtube_link, score) VALUES ($1, $2, $3) RETURNING id;',
@@ -26,4 +35,8 @@ async function insertRecomendationGenres({ recomendationId, genresIds }) {
 	return true;
 }
 
-export default { insertRecomendation, insertRecomendationGenres };
+export default {
+	searchRecomendationByParameter,
+	insertRecomendation,
+	insertRecomendationGenres,
+};
