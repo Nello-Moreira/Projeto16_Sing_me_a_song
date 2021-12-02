@@ -11,4 +11,10 @@ async function searchAllGenres() {
 	return genres;
 }
 
-export default { searchAllGenres };
+async function insertGenre({ genreName }) {
+	const genreId = await genresRepository.insertGenre({ genreName });
+
+	return genreId;
+}
+
+export default { searchAllGenres, insertGenre };

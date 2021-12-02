@@ -1,10 +1,18 @@
 import dbConnection from './connection.js';
 
 async function searchAllGenres() {
-	const examples = await dbConnection.query(
-		'SELECT * FROM genres ORDER BY name'
+	const genres = await dbConnection.query(
+		'SELECT * FROM genres ORDER BY name;'
 	);
-	return examples.rows;
+	return genres.rows;
 }
 
-export default { searchAllGenres };
+async function insertGenre({ genreName }) {
+	const genre = await dbConnection.query(
+		'INSERT INTO genres (name) VALUES ($1) RETURNING id;',
+		[genreName]
+	);
+	return genre.rows[0].id;
+}
+
+export default { searchAllGenres, insertGenre };

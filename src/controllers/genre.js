@@ -15,4 +15,16 @@ async function getAllGenres(request, response, next) {
 	}
 }
 
-export default { getAllGenres };
+async function postGenre(request, response, next) {
+	const { name } = request.body;
+
+	try {
+		const genreId = await genresService.insertGenre({ genreName: name });
+
+		return response.status(201).send({ id: genreId });
+	} catch (error) {
+		return next(error);
+	}
+}
+
+export default { getAllGenres, postGenre };

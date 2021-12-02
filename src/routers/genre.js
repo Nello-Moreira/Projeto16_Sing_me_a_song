@@ -5,4 +5,6 @@ const genreRouter = express.Router();
 
 genreRouter.get('/', genresController.getAllGenres);
 
+genreRouter.post('/', genresController.postGenre);
+
 export default genreRouter;
