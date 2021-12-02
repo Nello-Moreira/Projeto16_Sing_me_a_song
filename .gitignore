@@ -1,0 +1,9 @@
+# dependencies
+/node_modules
+
+# environments
+*.env
+
+# configs
+create-role.sql
+database_name.txt
