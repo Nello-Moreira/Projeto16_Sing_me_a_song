@@ -6,6 +6,8 @@ import recomendationService from '../services/recomendation.js';
 import BadRequestError from '../errors/BadRequest.js';
 import ConflictError from '../errors/Conflict.js';
 import statusCodes from '../helpers/statusCodes.js';
+import NotFoundError from '../errors/NotFound.js';
+import IdError from '../errors/IdError.js';
 
 async function postRecomendation(request, response, next) {
 	const recomendation = request.body;
@@ -37,18 +39,34 @@ async function postRecomendation(request, response, next) {
 	}
 }
 
-async function upvote(request, response, next) {
+async function getRecomendationId(request) {
 	const recomendationId = Number(request.params.id);
 
 	const invalidId = isInvalidRecomendationId({ recomendationId });
 
 	if (invalidId) {
-		return response.status(statusCodes.badRequest).send(invalidId.message);
+		throw new IdError(invalidId.message);
 	}
 
+	return recomendationId;
+}
+
+async function upvote(request, response, next) {
 	try {
-		return response.sendStatus(501);
+		const recomendationId = await getRecomendationId(request);
+
+		const voted = await recomendationService.upvote({ recomendationId });
+
+		return response.status(statusCodes.ok).send(voted);
 	} catch (error) {
+		if (error instanceof IdError) {
+			return response.status(statusCodes.badRequest).send(error.message);
+		}
+
+		if (error instanceof NotFoundError) {
+			return response.status(statusCodes.notFound).send(error.message);
+		}
+
 		return next(error);
 	}
 }

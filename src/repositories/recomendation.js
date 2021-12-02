@@ -35,8 +35,20 @@ async function insertRecomendationGenres({ recomendationId, genresIds }) {
 	return true;
 }
 
+async function updateRecomendationValue({ recomendationId, newValue }) {
+	const updatedRecomendation = await dbConnection.query(
+		`UPDATE songs
+		SET score = $2
+		WHERE id = $1
+		RETURNING *;`,
+		[recomendationId, newValue]
+	);
+	return updatedRecomendation.rows[0];
+}
+
 export default {
 	searchRecomendationByParameter,
 	insertRecomendation,
 	insertRecomendationGenres,
+	updateRecomendationValue,
 };

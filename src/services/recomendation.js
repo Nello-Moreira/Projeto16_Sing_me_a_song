@@ -3,6 +3,7 @@ import recomendationRepository from '../repositories/recomendation.js';
 import genreService from './genre.js';
 import BadRequestError from '../errors/BadRequest.js';
 import ConflictError from '../errors/Conflict.js';
+import NotFoundError from '../errors/NotFound.js';
 
 async function insertRecomendation({ name, youtubeLink, genresIds }) {
 	const youtubeId = getYouTubeID(youtubeLink, { fuzzy: false });
@@ -46,4 +47,41 @@ async function insertRecomendation({ name, youtubeLink, genresIds }) {
 	return recomendationId;
 }
 
-export default { insertRecomendation };
+async function getSong({ recomendationId }) {
+	// prettier-ignore
+	const songsArray = await recomendationRepository
+		.searchRecomendationByParameter(
+			{
+				parameter: 'id',
+				value: recomendationId,
+			}
+		);
+
+	const song = songsArray[0];
+
+	if (!song) {
+		throw new NotFoundError('There is no song with this id');
+	}
+
+	return song;
+}
+
+async function vote({ recomendationId, newValue }) {
+	return recomendationRepository.updateRecomendationValue({
+		recomendationId,
+		newValue,
+	});
+}
+
+async function upvote({ recomendationId }) {
+	const song = await getSong({ recomendationId });
+
+	const updatedRecomendation = await vote({
+		recomendationId,
+		newValue: song.score + 1,
+	});
+
+	return updatedRecomendation;
+}
+
+export default { insertRecomendation, upvote };
