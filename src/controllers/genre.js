@@ -1,6 +1,6 @@
 import genresService from '../services/genre.js';
-import NoContent from '../errors/NoContent.js';
-import Conflict from '../errors/Conflict.js';
+import NoContentError from '../errors/NoContent.js';
+import ConflictError from '../errors/Conflict.js';
 import { isInvalidGenreName } from '../validation/genre.js';
 import statusCodes from '../helpers/statusCodes.js';
 
@@ -10,7 +10,7 @@ async function getAllGenres(request, response, next) {
 
 		return response.status(statusCodes.ok).send(genres);
 	} catch (error) {
-		if (error instanceof NoContent) {
+		if (error instanceof NoContentError) {
 			return response.sendStatus(statusCodes.noContent);
 		}
 
@@ -32,7 +32,7 @@ async function postGenre(request, response, next) {
 
 		return response.status(statusCodes.created).send({ id: genreId });
 	} catch (error) {
-		if (error instanceof Conflict) {
+		if (error instanceof ConflictError) {
 			return response.status(statusCodes.conflict).send(error.message);
 		}
 

@@ -1,6 +1,6 @@
-export default class BadRequest extends Error {
+export default class BadRequestError extends Error {
 	constructor(message) {
 		super(message);
-		this.name = 'BadRequest';
+		this.name = 'BadRequestError';
 	}
 }

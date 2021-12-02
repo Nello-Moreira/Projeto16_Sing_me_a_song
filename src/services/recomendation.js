@@ -1,13 +1,13 @@
 import getYouTubeID from 'get-youtube-id';
 import recomendationRepository from '../repositories/recomendation.js';
 import genreService from './genre.js';
-import BadRequest from '../errors/BadRequest.js';
+import BadRequestError from '../errors/BadRequest.js';
 
 async function insertRecomendation({ name, youtubeLink, genresIds }) {
 	const youtubeId = getYouTubeID(youtubeLink, { fuzzy: false });
 
 	if (!youtubeId) {
-		throw new BadRequest('Invalid youtube link');
+		throw new BadRequestError('Invalid youtube link');
 	}
 
 	const allGenres = await genreService.searchAllGenres();
@@ -15,7 +15,7 @@ async function insertRecomendation({ name, youtubeLink, genresIds }) {
 
 	genresIds.forEach((genreId) => {
 		if (!allGenresIds.includes(genreId)) {
-			throw new BadRequest('All genre ids must be valid ids');
+			throw new BadRequestError('All genre ids must be valid ids');
 		}
 	});
 

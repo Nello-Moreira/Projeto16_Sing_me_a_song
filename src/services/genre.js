@@ -1,12 +1,12 @@
 import genresRepository from '../repositories/genre.js';
-import NoContent from '../errors/NoContent.js';
-import Conflict from '../errors/Conflict.js';
+import NoContentError from '../errors/NoContent.js';
+import ConflictError from '../errors/Conflict.js';
 
 async function searchAllGenres() {
 	const genres = await genresRepository.searchAllGenres();
 
 	if (genres.length === 0) {
-		throw new NoContent('Não há gêneros a serem exibidos');
+		throw new NoContentError('Não há gêneros a serem exibidos');
 	}
 
 	return genres;
@@ -21,7 +21,7 @@ async function insertGenre({ genreName }) {
 		.length > 0;
 
 	if (repeatedGenre) {
-		throw new Conflict('This genre already exists');
+		throw new ConflictError('This genre already exists');
 	}
 
 	const genreId = await genresRepository.insertGenre({ genreName });

@@ -1,6 +1,6 @@
-export default class NoContent extends Error {
+export default class NoContentError extends Error {
 	constructor(message) {
 		super(message);
-		this.name = 'NoContent';
+		this.name = 'NoContentError';
 	}
 }
