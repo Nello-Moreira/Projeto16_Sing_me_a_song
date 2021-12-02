@@ -1,5 +1,6 @@
 import genresService from '../services/genre.js';
 import NoContent from '../errors/NoContent.js';
+import Conflict from '../errors/Conflict.js';
 import { isInvalidGenreName } from '../validation/genre.js';
 
 async function getAllGenres(request, response, next) {
@@ -30,6 +31,10 @@ async function postGenre(request, response, next) {
 
 		return response.status(201).send({ id: genreId });
 	} catch (error) {
+		if (error instanceof Conflict) {
+			return response.status(409).send(error.message);
+		}
+
 		return next(error);
 	}
 }
