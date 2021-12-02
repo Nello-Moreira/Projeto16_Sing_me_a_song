@@ -11,7 +11,7 @@ async function insertRecomendation({ name, youtubeLink, genresIds }) {
 	}
 
 	const allGenres = await genreService.searchAllGenres();
-	const allGenresIds = allGenres.filter((genre) => genre.id);
+	const allGenresIds = allGenres.map((genre) => genre.id);
 
 	genresIds.forEach((genreId) => {
 		if (!allGenresIds.includes(genreId)) {

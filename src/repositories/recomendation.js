@@ -2,7 +2,7 @@ import dbConnection from './connection.js';
 
 async function insertRecomendation({ name, youtubeLink, score }) {
 	const recomendation = await dbConnection.query(
-		'INSERT INTO songs (name, youtube_link, score) VALUES ($1, $2, $2) RETURNING id;',
+		'INSERT INTO songs (name, youtube_link, score) VALUES ($1, $2, $3) RETURNING id;',
 		[name, youtubeLink, score]
 	);
 
