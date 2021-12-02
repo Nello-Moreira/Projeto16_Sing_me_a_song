@@ -5,4 +5,6 @@ const recomendationRouter = express.Router();
 
 recomendationRouter.post('/', recomendationController.postRecomendation);
 
+recomendationRouter.post('/:id/upvote', recomendationController.upvote);
+
 export default recomendationRouter;

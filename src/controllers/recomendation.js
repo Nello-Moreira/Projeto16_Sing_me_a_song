@@ -1,4 +1,7 @@
-import { isInvalidRecomendation } from '../validation/recomendation.js';
+import {
+	isInvalidRecomendation,
+	isInvalidRecomendationId,
+} from '../validation/recomendation.js';
 import recomendationService from '../services/recomendation.js';
 import BadRequestError from '../errors/BadRequest.js';
 import ConflictError from '../errors/Conflict.js';
@@ -34,4 +37,20 @@ async function postRecomendation(request, response, next) {
 	}
 }
 
-export default { postRecomendation };
+async function upvote(request, response, next) {
+	const recomendationId = Number(request.params.id);
+
+	const invalidId = isInvalidRecomendationId({ recomendationId });
+
+	if (invalidId) {
+		return response.status(statusCodes.badRequest).send(invalidId.message);
+	}
+
+	try {
+		return response.sendStatus(501);
+	} catch (error) {
+		return next(error);
+	}
+}
+
+export default { postRecomendation, upvote };
