@@ -67,7 +67,7 @@ function parseGenreString(genreString) {
 	return JSON.parse(genreString);
 }
 
-const searchSongDefaultQuery = `
+const searchSongDefaultQuery = (whereClause = '') => `
 	SELECT
 		songs.*,
 		array_agg('{"id": ' || genres.id || ', "name": "' || genres.name || '"}') as genres
@@ -76,12 +76,13 @@ const searchSongDefaultQuery = `
 		ON songs_genres.song_id = songs.id
 	JOIN genres
 		ON genres.id = songs_genres.genre_id
+	${whereClause}
 	GROUP BY songs.id
 `;
 
 async function searchTopAmount({ amount }) {
 	const queryResult = await dbConnection.query(
-		`${searchSongDefaultQuery}
+		`${searchSongDefaultQuery()}
 		ORDER BY songs.score DESC
 		LIMIT $1;
 	`,
@@ -97,6 +98,7 @@ async function searchTopAmount({ amount }) {
 }
 
 export default {
+	searchSongDefaultQuery,
 	searchRecomendationByParameter,
 	searchTopAmount,
 	insertRecomendation,
