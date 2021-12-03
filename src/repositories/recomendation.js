@@ -67,18 +67,21 @@ function parseGenreString(genreString) {
 	return JSON.parse(genreString);
 }
 
+const searchSongDefaultQuery = `
+	SELECT
+		songs.*,
+		array_agg('{"id": ' || genres.id || ', "name": "' || genres.name || '"}') as genres
+	FROM songs
+	JOIN songs_genres
+		ON songs_genres.song_id = songs.id
+	JOIN genres
+		ON genres.id = songs_genres.genre_id
+	GROUP BY songs.id
+`;
+
 async function searchTopAmount({ amount }) {
 	const queryResult = await dbConnection.query(
-		`
-		SELECT
-			songs.*,
-			array_agg('{"id": ' || genres.id || ', "name": "' || genres.name || '"}') as genres
-		FROM songs
-		JOIN songs_genres
-			ON songs_genres.song_id = songs.id
-		JOIN genres
-			ON genres.id = songs_genres.genre_id
-		GROUP BY songs.id
+		`${searchSongDefaultQuery}
 		ORDER BY songs.score DESC
 		LIMIT $1;
 	`,
