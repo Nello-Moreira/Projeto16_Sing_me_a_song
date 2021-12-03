@@ -1,6 +1,7 @@
 import {
 	isInvalidRecomendation,
 	isInvalidRecomendationId,
+	isInvalidAmount,
 } from '../validation/recomendation.js';
 import recomendationService from '../services/recomendation.js';
 import BadRequestError from '../errors/BadRequest.js';
@@ -92,11 +93,26 @@ async function downvote(request, response, next) {
 }
 
 async function getTopAmount(request, response, next) {
-	const amount = 1;
+	const amount = Number(request.params.amount);
 
-	const result = await recomendationService.getTopAmount({ amount });
+	const invalidAmount = isInvalidAmount({ amount });
 
-	return response.status(statusCodes.ok).send(result);
+	if (invalidAmount) {
+		return response.status(statusCodes.badRequest).send(invalidAmount.message);
+	}
+
+	try {
+		const result = await recomendationService.getTopAmount({ amount });
+
+		return response.status(statusCodes.ok).send(result);
+	} catch (error) {
+		return next(error);
+	}
 }
 
-export default { postRecomendation, upvote, downvote, getTopAmount };
+export default {
+	postRecomendation,
+	upvote,
+	downvote,
+	getTopAmount,
+};

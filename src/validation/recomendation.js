@@ -24,4 +24,13 @@ const isInvalidRecomendationId = (idObject) => recomendationIdSchema
 	.validate(idObject)
 	.error;
 
-export { isInvalidRecomendation, isInvalidRecomendationId };
+const amountSchema = Joi.object({
+	amount: Joi.number().min(1).required(),
+});
+
+// prettier-ignore
+const isInvalidAmount = (idObject) => amountSchema
+	.validate(idObject)
+	.error;
+
+export { isInvalidRecomendation, isInvalidRecomendationId, isInvalidAmount };
