@@ -55,9 +55,9 @@ async function upvote(request, response, next) {
 	try {
 		const recomendationId = await getRecomendationId(request);
 
-		const voted = await recomendationService.upvote({ recomendationId });
+		await recomendationService.upvote({ recomendationId });
 
-		return response.status(statusCodes.ok).send(voted);
+		return response.sendStatus(statusCodes.ok);
 	} catch (error) {
 		if (error instanceof IdError) {
 			return response.status(statusCodes.badRequest).send(error.message);

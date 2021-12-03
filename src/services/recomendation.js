@@ -76,12 +76,12 @@ async function vote({ recomendationId, newValue }) {
 async function upvote({ recomendationId }) {
 	const song = await getSong({ recomendationId });
 
-	const updatedRecomendation = await vote({
+	await vote({
 		recomendationId,
 		newValue: song.score + 1,
 	});
 
-	return updatedRecomendation;
+	return true;
 }
 
 async function downvote({ recomendationId }) {
@@ -91,12 +91,12 @@ async function downvote({ recomendationId }) {
 		return recomendationRepository.deleteRecomendation({ recomendationId });
 	}
 
-	const updatedRecomendation = await vote({
+	await vote({
 		recomendationId,
 		newValue: song.score - 1,
 	});
 
-	return updatedRecomendation;
+	return true;
 }
 
 export default { insertRecomendation, upvote, downvote };
