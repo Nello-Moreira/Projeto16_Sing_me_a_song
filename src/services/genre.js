@@ -1,6 +1,7 @@
 import genresRepository from '../repositories/genre.js';
 import NoContentError from '../errors/NoContent.js';
 import ConflictError from '../errors/Conflict.js';
+import NotFoundError from '../errors/NotFound.js';
 
 async function searchAllGenres() {
 	const genres = await genresRepository.searchAllGenres();
@@ -29,4 +30,17 @@ async function insertGenre({ genreName }) {
 	return genreId;
 }
 
-export default { searchAllGenres, insertGenre };
+async function searchGenre({ id }) {
+	const allGenres = await searchAllGenres();
+
+	// prettier-ignore
+	const existingGenre = allGenres
+		.filter((genre) => genre.id === id)
+		.length > 0;
+
+	if (!existingGenre) {
+		throw new NotFoundError('Genre id must be an existing id');
+	}
+}
+
+export default { searchGenre, searchAllGenres, insertGenre };

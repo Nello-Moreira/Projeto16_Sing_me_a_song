@@ -6,4 +6,13 @@ const genreNameSchema = Joi.object({
 
 const isInvalidGenreName = (name) => genreNameSchema.validate(name).error;
 
-export { isInvalidGenreName };
+const genreIdSchema = Joi.object({
+	id: Joi.number().min(1).required(),
+});
+
+// prettier-ignore
+const isInvalidGenreId = (idObject) => genreIdSchema
+	.validate(idObject)
+	.error;
+
+export { isInvalidGenreName, isInvalidGenreId };

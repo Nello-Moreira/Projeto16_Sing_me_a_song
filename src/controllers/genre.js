@@ -1,7 +1,8 @@
 import genresService from '../services/genre.js';
 import NoContentError from '../errors/NoContent.js';
 import ConflictError from '../errors/Conflict.js';
-import { isInvalidGenreName } from '../validation/genre.js';
+import NotFoundError from '../errors/NotFound.js';
+import { isInvalidGenreName, isInvalidGenreId } from '../validation/genre.js';
 import statusCodes from '../helpers/statusCodes.js';
 
 async function getAllGenres(request, response, next) {
@@ -40,4 +41,26 @@ async function postGenre(request, response, next) {
 	}
 }
 
-export default { getAllGenres, postGenre };
+async function getGenre(request, response, next) {
+	const id = Number(request.params.id);
+
+	const genreIdError = isInvalidGenreId({ id });
+
+	if (genreIdError) {
+		return response.status(statusCodes.badRequest).send(genreIdError.message);
+	}
+
+	try {
+		const genre = await genresService.searchGenre({ id });
+
+		return response.status(statusCodes.ok).send(genre);
+	} catch (error) {
+		if (error instanceof NotFoundError) {
+			return response.status(statusCodes.notFound).send(error.message);
+		}
+
+		return next(error);
+	}
+}
+
+export default { getAllGenres, postGenre, getGenre };
