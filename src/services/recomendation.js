@@ -84,4 +84,19 @@ async function upvote({ recomendationId }) {
 	return updatedRecomendation;
 }
 
-export default { insertRecomendation, upvote };
+async function downvote({ recomendationId }) {
+	const song = await getSong({ recomendationId });
+
+	if (song.score === -5) {
+		return recomendationRepository.deleteRecomendation({ recomendationId });
+	}
+
+	const updatedRecomendation = await vote({
+		recomendationId,
+		newValue: song.score - 1,
+	});
+
+	return updatedRecomendation;
+}
+
+export default { insertRecomendation, upvote, downvote };

@@ -46,9 +46,28 @@ async function updateRecomendationValue({ recomendationId, newValue }) {
 	return updatedRecomendation.rows[0];
 }
 
+async function deleteRecomendationGenres({ recomendationId }) {
+	await dbConnection.query('DELETE from songs_genres WHERE song_id = $1;', [
+		recomendationId,
+	]);
+
+	return true;
+}
+
+async function deleteRecomendation({ recomendationId }) {
+	await deleteRecomendationGenres({ recomendationId });
+
+	await dbConnection.query('DELETE from songs WHERE id = $1;', [
+		recomendationId,
+	]);
+
+	return true;
+}
+
 export default {
 	searchRecomendationByParameter,
 	insertRecomendation,
 	insertRecomendationGenres,
 	updateRecomendationValue,
+	deleteRecomendation,
 };

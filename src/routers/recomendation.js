@@ -7,4 +7,6 @@ recomendationRouter.post('/', recomendationController.postRecomendation);
 
 recomendationRouter.post('/:id/upvote', recomendationController.upvote);
 
+recomendationRouter.post('/:id/downvote', recomendationController.downvote);
+
 export default recomendationRouter;

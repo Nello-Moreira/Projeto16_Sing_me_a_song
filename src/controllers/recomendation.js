@@ -71,4 +71,24 @@ async function upvote(request, response, next) {
 	}
 }
 
-export default { postRecomendation, upvote };
+async function downvote(request, response, next) {
+	try {
+		const recomendationId = await getRecomendationId(request);
+
+		await recomendationService.downvote({ recomendationId });
+
+		return response.sendStatus(statusCodes.ok);
+	} catch (error) {
+		if (error instanceof IdError) {
+			return response.status(statusCodes.badRequest).send(error.message);
+		}
+
+		if (error instanceof NotFoundError) {
+			return response.status(statusCodes.notFound).send(error.message);
+		}
+
+		return next(error);
+	}
+}
+
+export default { postRecomendation, upvote, downvote };
