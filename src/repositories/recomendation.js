@@ -63,26 +63,18 @@ async function deleteRecomendation({ recomendationId }) {
 	return true;
 }
 
-function parseGenreString(genreString) {
-	return JSON.parse(genreString);
-}
-
-const searchSongDefaultQuery = (whereClause = '') => `
-	SELECT
-		songs.*,
-		array_agg('{"id": ' || genres.id || ', "name": "' || genres.name || '"}') as genres
-	FROM songs
-	JOIN songs_genres
-		ON songs_genres.song_id = songs.id
-	JOIN genres
-		ON genres.id = songs_genres.genre_id
-	${whereClause}
-	GROUP BY songs.id
-`;
-
 async function searchTopAmount({ amount }) {
 	const queryResult = await dbConnection.query(
-		`${searchSongDefaultQuery()}
+		`
+		SELECT
+			songs.*,
+			array_agg('{"id": ' || genres.id || ', "name": "' || genres.name || '"}') as genres
+		FROM songs
+		JOIN songs_genres
+			ON songs_genres.song_id = songs.id
+		JOIN genres
+			ON genres.id = songs_genres.genre_id
+		GROUP BY songs.id
 		ORDER BY songs.score DESC
 		LIMIT $1;
 	`,
@@ -91,14 +83,13 @@ async function searchTopAmount({ amount }) {
 
 	const formattedResult = queryResult.rows.map((song) => ({
 		...song,
-		genres: song.genres.map((genreString) => parseGenreString(genreString)),
+		genres: song.genres.map((genreString) => JSON.parse(genreString)),
 	}));
 
 	return formattedResult;
 }
 
 export default {
-	searchSongDefaultQuery,
 	searchRecomendationByParameter,
 	searchTopAmount,
 	insertRecomendation,
