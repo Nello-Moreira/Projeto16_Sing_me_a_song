@@ -25,7 +25,7 @@ async function postRecomendation(request, response, next) {
 			recomendation
 		);
 
-		return response.status(statusCodes.ok).send(recomendationId);
+		return response.status(statusCodes.ok).send({ id: recomendationId });
 	} catch (error) {
 		if (error instanceof BadRequestError) {
 			return response.status(statusCodes.badRequest).send(error.message);
