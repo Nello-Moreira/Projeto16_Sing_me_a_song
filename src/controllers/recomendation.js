@@ -9,6 +9,7 @@ import ConflictError from '../errors/Conflict.js';
 import statusCodes from '../helpers/statusCodes.js';
 import NotFoundError from '../errors/NotFound.js';
 import IdError from '../errors/IdError.js';
+import NoContentError from '../errors/NoContent.js';
 
 async function postRecomendation(request, response, next) {
 	const recomendation = request.body;
@@ -106,6 +107,10 @@ async function getTopAmount(request, response, next) {
 
 		return response.status(statusCodes.ok).send(result);
 	} catch (error) {
+		if (error instanceof NoContentError) {
+			return response.sendStatus(statusCodes.noContent);
+		}
+
 		return next(error);
 	}
 }

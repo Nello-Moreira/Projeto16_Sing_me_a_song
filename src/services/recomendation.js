@@ -4,6 +4,7 @@ import genreService from './genre.js';
 import BadRequestError from '../errors/BadRequest.js';
 import ConflictError from '../errors/Conflict.js';
 import NotFoundError from '../errors/NotFound.js';
+import NoContentError from '../errors/NoContent.js';
 
 async function insertRecomendation({ name, youtubeLink, genresIds }) {
 	const youtubeId = getYouTubeID(youtubeLink, { fuzzy: false });
@@ -100,7 +101,15 @@ async function downvote({ recomendationId }) {
 }
 
 async function getTopAmount({ amount }) {
-	return recomendationRepository.searchTopAmount({ amount });
+	const topRecomendations = await recomendationRepository.searchTopAmount({
+		amount,
+	});
+
+	if (topRecomendations.length === 0) {
+		throw new NoContentError();
+	}
+
+	return topRecomendations;
 }
 
 export default {
