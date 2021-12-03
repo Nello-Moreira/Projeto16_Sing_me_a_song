@@ -9,4 +9,6 @@ recomendationRouter.post('/:id/upvote', recomendationController.upvote);
 
 recomendationRouter.post('/:id/downvote', recomendationController.downvote);
 
+recomendationRouter.get('/top/:amount', recomendationController.getTopAmount);
+
 export default recomendationRouter;

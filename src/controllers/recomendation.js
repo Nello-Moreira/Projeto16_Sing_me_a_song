@@ -91,4 +91,12 @@ async function downvote(request, response, next) {
 	}
 }
 
-export default { postRecomendation, upvote, downvote };
+async function getTopAmount(request, response, next) {
+	const amount = 1;
+
+	const result = await recomendationService.getTopAmount({ amount });
+
+	return response.status(statusCodes.ok).send(result);
+}
+
+export default { postRecomendation, upvote, downvote, getTopAmount };

@@ -99,4 +99,13 @@ async function downvote({ recomendationId }) {
 	return true;
 }
 
-export default { insertRecomendation, upvote, downvote };
+async function getTopAmount({ amount }) {
+	return recomendationRepository.searchTopAmount({ amount });
+}
+
+export default {
+	insertRecomendation,
+	upvote,
+	downvote,
+	getTopAmount,
+};
