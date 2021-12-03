@@ -41,6 +41,8 @@ async function searchGenre({ id }) {
 	if (!existingGenre) {
 		throw new NotFoundError('Genre id must be an existing id');
 	}
+
+	return genresRepository.searchGenreWithRecomendations({ id });
 }
 
 export default { searchGenre, searchAllGenres, insertGenre };

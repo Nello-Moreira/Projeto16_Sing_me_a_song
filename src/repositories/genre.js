@@ -59,8 +59,8 @@ async function searchGenreWithRecomendations({ id }) {
 		(previousValue, currentValue) => previousValue + currentValue
 	);
 
-	genre.recomendations = formattedRecomendations;
 	genre.score = genreScore;
+	genre.recomendations = formattedRecomendations;
 
 	return genre;
 }
