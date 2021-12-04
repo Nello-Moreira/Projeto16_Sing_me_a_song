@@ -5,6 +5,7 @@ import BadRequestError from '../errors/BadRequest.js';
 import ConflictError from '../errors/Conflict.js';
 import NotFoundError from '../errors/NotFound.js';
 import NoContentError from '../errors/NoContent.js';
+import createRandomInteger from '../helpers/createRandomInteger.js';
 
 async function insertRecomendation({ name, youtubeLink, genresIds }) {
 	const youtubeId = getYouTubeID(youtubeLink, { fuzzy: false });
@@ -113,7 +114,37 @@ async function getTopAmount({ amount }) {
 }
 
 async function getRandomRecomendation() {
-	return true;
+	let randomIndex;
+	const { min, max } = await recomendationRepository.getScoreLimits();
+
+	if (!(min < 10 && max > 10)) {
+		// prettier-ignore
+		const recomendations = await recomendationRepository.searchAllRecomendations();
+		randomIndex = createRandomInteger(0, recomendations.length);
+		return recomendations[randomIndex];
+	}
+
+	const randomNumber = Math.random();
+
+	if (randomNumber < 0.3) {
+		const songsWithScoreLessThanTen =
+			await recomendationRepository.searchRecomendationsByFilter({
+				filter: 'songs.score <= 10',
+			});
+
+		randomIndex = createRandomInteger(0, songsWithScoreLessThanTen.length);
+
+		return songsWithScoreLessThanTen[randomIndex];
+	}
+
+	const songsWithScoreGreaterThanTen =
+		await recomendationRepository.searchRecomendationsByFilter({
+			filter: 'songs.score > 10',
+		});
+
+	randomIndex = createRandomInteger(0, songsWithScoreGreaterThanTen.length);
+
+	return songsWithScoreGreaterThanTen[randomIndex];
 }
 
 export default {

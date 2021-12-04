@@ -1,5 +1,29 @@
 import dbConnection from './connection.js';
 
+async function searchAllRecomendations() {
+	const queryResult = await dbConnection.query(
+		`
+		SELECT
+			songs.*,
+			array_agg('{"id": ' || genres.id || ', "name": "' || genres.name || '"}') as genres
+		FROM songs
+		JOIN songs_genres
+			ON songs_genres.song_id = songs.id
+		JOIN genres
+			ON genres.id = songs_genres.genre_id
+		GROUP BY songs.id
+		ORDER BY songs.score DESC;
+	`
+	);
+
+	const formattedResult = queryResult.rows.map((song) => ({
+		...song,
+		genres: song.genres.map((genreString) => JSON.parse(genreString)),
+	}));
+
+	return formattedResult;
+}
+
 async function searchRecomendationByParameter({ parameter, value }) {
 	const recomendation = await dbConnection.query(
 		`SELECT * FROM songs WHERE ${parameter} = $1;`,
@@ -7,6 +31,36 @@ async function searchRecomendationByParameter({ parameter, value }) {
 	);
 
 	return recomendation.rows;
+}
+
+async function searchRecomendationsByFilter({ filter }) {
+	let baseQuery = `
+		SELECT
+			songs.*,
+			array_agg('{"id": ' || genres.id || ', "name": "' || genres.name || '"}') as genres
+		FROM songs
+		JOIN songs_genres
+			ON songs_genres.song_id = songs.id
+		JOIN genres
+			ON genres.id = songs_genres.genre_id `;
+
+	if (filter) {
+		baseQuery += `WHERE ${filter}`;
+	}
+
+	baseQuery += `
+		GROUP BY songs.id
+		ORDER BY songs.score DESC ;
+	`;
+
+	let recomendations = await dbConnection.query(baseQuery);
+
+	recomendations = recomendations.rows.map((song) => ({
+		...song,
+		genres: song.genres.map((genreString) => JSON.parse(genreString)),
+	}));
+
+	return recomendations;
 }
 
 async function insertRecomendation({ name, youtubeLink, score }) {
@@ -98,6 +152,8 @@ async function getScoreLimits() {
 }
 
 export default {
+	searchRecomendationsByFilter,
+	searchAllRecomendations,
 	searchRecomendationByParameter,
 	searchTopAmount,
 	insertRecomendation,
