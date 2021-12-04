@@ -11,4 +11,9 @@ recomendationRouter.post('/:id/downvote', recomendationController.downvote);
 
 recomendationRouter.get('/top/:amount', recomendationController.getTopAmount);
 
+recomendationRouter.get(
+	'/random',
+	recomendationController.getRandomRecomendation
+);
+
 export default recomendationRouter;

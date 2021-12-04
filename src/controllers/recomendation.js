@@ -115,9 +115,24 @@ async function getTopAmount(request, response, next) {
 	}
 }
 
+async function getRandomRecomendation(request, response, next) {
+	try {
+		const result = await recomendationService.getRandomRecomendation();
+
+		return response.status(statusCodes.ok).send(result);
+	} catch (error) {
+		if (error instanceof NotFoundError) {
+			return response.sendStatus(statusCodes.notFound);
+		}
+
+		return next(error);
+	}
+}
+
 export default {
 	postRecomendation,
 	upvote,
 	downvote,
 	getTopAmount,
+	getRandomRecomendation,
 };

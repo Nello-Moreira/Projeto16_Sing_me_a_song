@@ -112,9 +112,14 @@ async function getTopAmount({ amount }) {
 	return topRecomendations;
 }
 
+async function getRandomRecomendation() {
+	return true;
+}
+
 export default {
 	insertRecomendation,
 	upvote,
 	downvote,
 	getTopAmount,
+	getRandomRecomendation,
 };
