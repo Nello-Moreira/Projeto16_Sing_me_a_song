@@ -89,6 +89,14 @@ async function searchTopAmount({ amount }) {
 	return formattedResult;
 }
 
+async function getScoreLimits() {
+	const queryResult = await dbConnection.query(
+		'SELECT MIN(score), MAX(score) FROM songs;'
+	);
+
+	return queryResult.rows[0];
+}
+
 export default {
 	searchRecomendationByParameter,
 	searchTopAmount,
@@ -96,4 +104,5 @@ export default {
 	insertRecomendationGenres,
 	updateRecomendationValue,
 	deleteRecomendation,
+	getScoreLimits,
 };
