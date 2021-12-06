@@ -132,7 +132,7 @@ recommendation.getRandomRecommendation =
 				throw new NoContentError();
 			}
 
-			randomIndex = createRandomInteger(0, recommendations.length - 1);
+			randomIndex = createRandomInteger(0, recommendations.length);
 
 			return recommendations[randomIndex];
 		}
@@ -149,10 +149,7 @@ recommendation.getRandomRecommendation =
 				throw new NoContentError();
 			}
 
-			randomIndex = createRandomInteger(
-				0,
-				songsWithScoreLessThanTen.length - 1
-			);
+			randomIndex = createRandomInteger(0, songsWithScoreLessThanTen.length);
 
 			return songsWithScoreLessThanTen[randomIndex];
 		}
@@ -166,10 +163,7 @@ recommendation.getRandomRecommendation =
 			throw new NoContentError();
 		}
 
-		randomIndex = createRandomInteger(
-			0,
-			songsWithScoreGreaterThanTen.length - 1
-		);
+		randomIndex = createRandomInteger(0, songsWithScoreGreaterThanTen.length);
 
 		return songsWithScoreGreaterThanTen[randomIndex];
 	};
