@@ -13,7 +13,7 @@ describe('Tests for upvote function', () => {
 		const result = await recomendation.upvote({ recomendationId });
 
 		expect(result).toBe(true);
-		expect(recomendation.getSong).toHaveBeenCalled();
+		expect(recomendation.getSong).toHaveBeenCalledWith({ recomendationId });
 		expect(recomendation.vote).toHaveBeenCalledWith({
 			recomendationId,
 			newValue: 1,
