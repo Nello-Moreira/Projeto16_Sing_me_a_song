@@ -126,7 +126,7 @@ recomendation.getRandomRecomendation = async function getRandomRecomendation() {
 	if (!(min < 10 && max > 10)) {
 		// prettier-ignore
 		const recomendations = await recomendationRepository.searchAllRecomendations();
-		randomIndex = createRandomInteger(0, recomendations.length);
+		randomIndex = createRandomInteger(0, recomendations.length - 1);
 		return recomendations[randomIndex];
 	}
 
