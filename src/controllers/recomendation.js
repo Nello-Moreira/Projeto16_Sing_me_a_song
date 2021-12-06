@@ -121,8 +121,8 @@ async function getRandomRecomendation(request, response, next) {
 
 		return response.status(statusCodes.ok).send(result);
 	} catch (error) {
-		if (error instanceof NotFoundError) {
-			return response.sendStatus(statusCodes.notFound);
+		if (error instanceof NoContentError) {
+			return response.sendStatus(statusCodes.noContent);
 		}
 
 		return next(error);

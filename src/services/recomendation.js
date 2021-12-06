@@ -126,6 +126,11 @@ recomendation.getRandomRecomendation = async function getRandomRecomendation() {
 	if (!(min < 10 && max > 10)) {
 		// prettier-ignore
 		const recomendations = await recomendationRepository.searchAllRecomendations();
+
+		if (recomendations.length === 0) {
+			throw new NoContentError();
+		}
+
 		randomIndex = createRandomInteger(0, recomendations.length - 1);
 		return recomendations[randomIndex];
 	}
@@ -138,7 +143,11 @@ recomendation.getRandomRecomendation = async function getRandomRecomendation() {
 				filter: 'songs.score <= 10',
 			});
 
-		randomIndex = createRandomInteger(0, songsWithScoreLessThanTen.length);
+		if (songsWithScoreLessThanTen.length === 0) {
+			throw new NoContentError();
+		}
+
+		randomIndex = createRandomInteger(0, songsWithScoreLessThanTen.length - 1);
 
 		return songsWithScoreLessThanTen[randomIndex];
 	}
@@ -148,7 +157,11 @@ recomendation.getRandomRecomendation = async function getRandomRecomendation() {
 			filter: 'songs.score > 10',
 		});
 
-	randomIndex = createRandomInteger(0, songsWithScoreGreaterThanTen.length);
+	if (songsWithScoreGreaterThanTen.length === 0) {
+		throw new NoContentError();
+	}
+
+	randomIndex = createRandomInteger(0, songsWithScoreGreaterThanTen.length - 1);
 
 	return songsWithScoreGreaterThanTen[randomIndex];
 };
