@@ -149,6 +149,7 @@ async function getRandomRecomendation() {
 
 export default {
 	insertRecomendation,
+	vote,
 	upvote,
 	downvote,
 	getTopAmount,
