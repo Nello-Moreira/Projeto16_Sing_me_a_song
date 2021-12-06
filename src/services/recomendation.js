@@ -7,7 +7,13 @@ import NotFoundError from '../errors/NotFound.js';
 import NoContentError from '../errors/NoContent.js';
 import createRandomInteger from '../helpers/createRandomInteger.js';
 
-async function insertRecomendation({ name, youtubeLink, genresIds }) {
+const recomendation = {};
+
+recomendation.insertRecomendation = async function insertRecomendation({
+	name,
+	youtubeLink,
+	genresIds,
+}) {
 	const youtubeId = getYouTubeID(youtubeLink, { fuzzy: false });
 
 	if (!youtubeId) {
@@ -47,9 +53,9 @@ async function insertRecomendation({ name, youtubeLink, genresIds }) {
 	});
 
 	return recomendationId;
-}
+};
 
-async function getSong({ recomendationId }) {
+recomendation.getSong = async function getSong({ recomendationId }) {
 	// prettier-ignore
 	const songsArray = await recomendationRepository
 		.searchRecomendationByParameter(
@@ -66,42 +72,42 @@ async function getSong({ recomendationId }) {
 	}
 
 	return song;
-}
+};
 
-async function vote({ recomendationId, newValue }) {
+recomendation.vote = async function vote({ recomendationId, newValue }) {
 	return recomendationRepository.updateRecomendationValue({
 		recomendationId,
 		newValue,
 	});
-}
+};
 
-async function upvote({ recomendationId }) {
-	const song = await getSong({ recomendationId });
+recomendation.upvote = async function upvote({ recomendationId }) {
+	const song = await recomendation.getSong({ recomendationId });
 
-	await vote({
+	await recomendation.vote({
 		recomendationId,
 		newValue: song.score + 1,
 	});
 
 	return true;
-}
+};
 
-async function downvote({ recomendationId }) {
-	const song = await getSong({ recomendationId });
+recomendation.downvote = async function downvote({ recomendationId }) {
+	const song = await recomendation.getSong({ recomendationId });
 
 	if (song.score === -5) {
 		return recomendationRepository.deleteRecomendation({ recomendationId });
 	}
 
-	await vote({
+	await recomendation.vote({
 		recomendationId,
 		newValue: song.score - 1,
 	});
 
 	return true;
-}
+};
 
-async function getTopAmount({ amount }) {
+recomendation.getTopAmount = async function getTopAmount({ amount }) {
 	const topRecomendations = await recomendationRepository.searchTopAmount({
 		amount,
 	});
@@ -111,9 +117,9 @@ async function getTopAmount({ amount }) {
 	}
 
 	return topRecomendations;
-}
+};
 
-async function getRandomRecomendation() {
+recomendation.getRandomRecomendation = async function getRandomRecomendation() {
 	let randomIndex;
 	const { min, max } = await recomendationRepository.getScoreLimits();
 
@@ -145,14 +151,6 @@ async function getRandomRecomendation() {
 	randomIndex = createRandomInteger(0, songsWithScoreGreaterThanTen.length);
 
 	return songsWithScoreGreaterThanTen[randomIndex];
-}
-
-export default {
-	insertRecomendation,
-	vote,
-	upvote,
-	downvote,
-	getTopAmount,
-	getRandomRecomendation,
-	getSong,
 };
+
+export default recomendation;
