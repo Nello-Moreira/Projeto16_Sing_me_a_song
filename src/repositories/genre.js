@@ -15,7 +15,7 @@ async function insertGenre({ genreName }) {
 	return genre.rows[0].id;
 }
 
-async function searchGenreWithRecomendations({ id }) {
+async function searchGenreWithRecommendations({ id }) {
 	const genreQueryResult = await dbConnection.query(
 		`
 		SELECT * FROM genres WHERE id = $1;
@@ -25,7 +25,7 @@ async function searchGenreWithRecomendations({ id }) {
 
 	const genre = genreQueryResult.rows[0];
 
-	const recomendationsQueryResult = await dbConnection.query(
+	const recommendationsQueryResult = await dbConnection.query(
 		`
 	SELECT songs.*,
 		(
@@ -44,15 +44,15 @@ async function searchGenreWithRecomendations({ id }) {
 		[id]
 	);
 
-	const formattedRecomendations = recomendationsQueryResult.rows.map(
+	const formattedRecommendations = recommendationsQueryResult.rows.map(
 		(song) => ({
 			...song,
 			genres: song.genres.map((genreString) => JSON.parse(genreString)),
 		})
 	);
 
-	const scores = formattedRecomendations.map(
-		(recomendation) => recomendation.score
+	const scores = formattedRecommendations.map(
+		(recommendation) => recommendation.score
 	);
 
 	const genreScore = scores.reduce(
@@ -60,8 +60,8 @@ async function searchGenreWithRecomendations({ id }) {
 	);
 
 	genre.score = genreScore;
-	genre.recomendations = formattedRecomendations;
+	genre.recommendations = formattedRecommendations;
 
 	return genre;
 }
-export default { searchAllGenres, searchGenreWithRecomendations, insertGenre };
+export default { searchAllGenres, searchGenreWithRecommendations, insertGenre };

@@ -1,9 +1,9 @@
 import {
-	isInvalidRecomendation,
-	isInvalidRecomendationId,
+	isInvalidRecommendation,
+	isInvalidRecommendationId,
 	isInvalidAmount,
-} from '../validation/recomendation.js';
-import recomendationService from '../services/recomendation.js';
+} from '../validation/recommendation.js';
+import recommendationService from '../services/recommendation.js';
 import BadRequestError from '../errors/BadRequest.js';
 import ConflictError from '../errors/Conflict.js';
 import statusCodes from '../helpers/statusCodes.js';
@@ -11,23 +11,23 @@ import NotFoundError from '../errors/NotFound.js';
 import IdError from '../errors/IdError.js';
 import NoContentError from '../errors/NoContent.js';
 
-async function postRecomendation(request, response, next) {
-	const recomendation = request.body;
+async function postRecommendation(request, response, next) {
+	const recommendation = request.body;
 
-	const recomendationError = isInvalidRecomendation(recomendation);
+	const recommendationError = isInvalidRecommendation(recommendation);
 
-	if (recomendationError) {
+	if (recommendationError) {
 		return response
 			.status(statusCodes.badRequest)
-			.send(recomendationError.message);
+			.send(recommendationError.message);
 	}
 
 	try {
-		const recomendationId = await recomendationService.insertRecomendation(
-			recomendation
+		const recommendationId = await recommendationService.insertRecommendation(
+			recommendation
 		);
 
-		return response.status(statusCodes.ok).send({ id: recomendationId });
+		return response.status(statusCodes.ok).send({ id: recommendationId });
 	} catch (error) {
 		if (error instanceof BadRequestError) {
 			return response.status(statusCodes.badRequest).send(error.message);
@@ -41,23 +41,23 @@ async function postRecomendation(request, response, next) {
 	}
 }
 
-async function getRecomendationId(request) {
-	const recomendationId = Number(request.params.id);
+async function getRecommendationId(request) {
+	const recommendationId = Number(request.params.id);
 
-	const invalidId = isInvalidRecomendationId({ recomendationId });
+	const invalidId = isInvalidRecommendationId({ recommendationId });
 
 	if (invalidId) {
 		throw new IdError(invalidId.message);
 	}
 
-	return recomendationId;
+	return recommendationId;
 }
 
 async function upvote(request, response, next) {
 	try {
-		const recomendationId = await getRecomendationId(request);
+		const recommendationId = await getRecommendationId(request);
 
-		await recomendationService.upvote({ recomendationId });
+		await recommendationService.upvote({ recommendationId });
 
 		return response.sendStatus(statusCodes.ok);
 	} catch (error) {
@@ -75,9 +75,9 @@ async function upvote(request, response, next) {
 
 async function downvote(request, response, next) {
 	try {
-		const recomendationId = await getRecomendationId(request);
+		const recommendationId = await getRecommendationId(request);
 
-		await recomendationService.downvote({ recomendationId });
+		await recommendationService.downvote({ recommendationId });
 
 		return response.sendStatus(statusCodes.ok);
 	} catch (error) {
@@ -103,7 +103,7 @@ async function getTopAmount(request, response, next) {
 	}
 
 	try {
-		const result = await recomendationService.getTopAmount({ amount });
+		const result = await recommendationService.getTopAmount({ amount });
 
 		return response.status(statusCodes.ok).send(result);
 	} catch (error) {
@@ -115,9 +115,9 @@ async function getTopAmount(request, response, next) {
 	}
 }
 
-async function getRandomRecomendation(request, response, next) {
+async function getRandomRecommendation(request, response, next) {
 	try {
-		const result = await recomendationService.getRandomRecomendation();
+		const result = await recommendationService.getRandomRecommendation();
 
 		return response.status(statusCodes.ok).send(result);
 	} catch (error) {
@@ -130,9 +130,9 @@ async function getRandomRecomendation(request, response, next) {
 }
 
 export default {
-	postRecomendation,
+	postRecommendation,
 	upvote,
 	downvote,
 	getTopAmount,
-	getRandomRecomendation,
+	getRandomRecommendation,
 };

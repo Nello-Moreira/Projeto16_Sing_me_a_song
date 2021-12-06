@@ -1,27 +1,27 @@
 import getYouTubeID from 'get-youtube-id';
-import recomendation from '../../../src/services/recomendation.js';
+import recommendation from '../../../src/services/recommendation.js';
 import genre from '../../../src/services/genre.js';
-import recomendationRepository from '../../../src/repositories/recomendation.js';
+import recommendationRepository from '../../../src/repositories/recommendation.js';
 import ConflictError from '../../../src/errors/Conflict.js';
 import BadRequestError from '../../../src/errors/BadRequest.js';
 
 jest.mock('get-youtube-id');
 
-describe('Tests for insert recomendation', () => {
+describe('Tests for insert recommendation', () => {
 	const allGenres = [
 		{ id: 1, name: 'name1' },
 		{ id: 2, name: 'name2' },
 		{ id: 3, name: 'name3' },
 	];
 
-	const newRecomendation = {
-		name: 'recomendation',
+	const newRecommendation = {
+		name: 'recommendation',
 		youtubeLink: 'some link',
 		genresIds: [1, 2],
 	};
 
-	const invalidGenreIdRecomendation = {
-		name: 'recomendation',
+	const invalidGenreIdRecommendation = {
+		name: 'recommendation',
 		youtubeLink: 'some link',
 		genresIds: [0],
 	};
@@ -29,7 +29,7 @@ describe('Tests for insert recomendation', () => {
 	it('should throw badRequestError when it is an invalid youtube id', async () => {
 		getYouTubeID.mockImplementationOnce(() => false);
 
-		const errorPromise = recomendation.insertRecomendation(newRecomendation);
+		const errorPromise = recommendation.insertRecommendation(newRecommendation);
 
 		await expect(errorPromise).rejects.toThrowError(BadRequestError);
 	});
@@ -41,8 +41,8 @@ describe('Tests for insert recomendation', () => {
 			.spyOn(genre, 'searchAllGenres')
 			.mockImplementationOnce(() => allGenres);
 
-		const errorPromise = recomendation.insertRecomendation(
-			invalidGenreIdRecomendation
+		const errorPromise = recommendation.insertRecommendation(
+			invalidGenreIdRecommendation
 		);
 
 		await expect(errorPromise).rejects.toThrowError(BadRequestError);
@@ -56,10 +56,10 @@ describe('Tests for insert recomendation', () => {
 			.mockImplementationOnce(() => allGenres);
 
 		jest
-			.spyOn(recomendationRepository, 'searchRecomendationByParameter')
+			.spyOn(recommendationRepository, 'searchRecommendationByParameter')
 			.mockImplementationOnce(() => [true]);
 
-		const errorPromise = recomendation.insertRecomendation(newRecomendation);
+		const errorPromise = recommendation.insertRecommendation(newRecommendation);
 
 		await expect(errorPromise).rejects.toThrowError(ConflictError);
 	});
@@ -72,18 +72,18 @@ describe('Tests for insert recomendation', () => {
 			.mockImplementationOnce(() => allGenres);
 
 		jest
-			.spyOn(recomendationRepository, 'searchRecomendationByParameter')
+			.spyOn(recommendationRepository, 'searchRecommendationByParameter')
 			.mockImplementationOnce(() => []);
 
 		jest
-			.spyOn(recomendationRepository, 'insertRecomendation')
+			.spyOn(recommendationRepository, 'insertRecommendation')
 			.mockImplementationOnce(() => 1);
 
 		jest
-			.spyOn(recomendationRepository, 'insertRecomendationGenres')
+			.spyOn(recommendationRepository, 'insertRecommendationGenres')
 			.mockImplementationOnce(() => true);
 
-		const result = await recomendation.insertRecomendation(newRecomendation);
+		const result = await recommendation.insertRecommendation(newRecommendation);
 
 		expect(result).toBe(1);
 	});

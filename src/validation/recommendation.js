@@ -1,6 +1,6 @@
 import Joi from 'joi';
 
-const recomendationSchema = Joi.object({
+const recommendationSchema = Joi.object({
 	name: Joi.string().min(1).required(),
 	youtubeLink: Joi.string()
 		.pattern(
@@ -11,16 +11,16 @@ const recomendationSchema = Joi.object({
 });
 
 // prettier-ignore
-const isInvalidRecomendation = (recomendationObject) => recomendationSchema
-	.validate(recomendationObject)
+const isInvalidRecommendation = (recommendationObject) => recommendationSchema
+	.validate(recommendationObject)
 	.error;
 
-const recomendationIdSchema = Joi.object({
-	recomendationId: Joi.number().min(1).required(),
+const recommendationIdSchema = Joi.object({
+	recommendationId: Joi.number().min(1).required(),
 });
 
 // prettier-ignore
-const isInvalidRecomendationId = (idObject) => recomendationIdSchema
+const isInvalidRecommendationId = (idObject) => recommendationIdSchema
 	.validate(idObject)
 	.error;
 
@@ -33,4 +33,4 @@ const isInvalidAmount = (idObject) => amountSchema
 	.validate(idObject)
 	.error;
 
-export { isInvalidRecomendation, isInvalidRecomendationId, isInvalidAmount };
+export { isInvalidRecommendation, isInvalidRecommendationId, isInvalidAmount };
